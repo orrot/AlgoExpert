@@ -1,4 +1,4 @@
-package easy.arrays;
+package algorithms.medium;
 
 public class LongestPalindrome {
 

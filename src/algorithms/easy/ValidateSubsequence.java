@@ -1,4 +1,4 @@
-package algo.strings.easy;
+package algorithms.easy;
 
 import java.util.List;
 

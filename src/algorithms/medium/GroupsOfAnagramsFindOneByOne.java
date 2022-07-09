@@ -1,4 +1,4 @@
-package algo.strings.medium;
+package algorithms.medium;
 
 import java.util.*;
 
