@@ -2,3 +2,5 @@
 .idea/
 
 AlgoExpert.iml
+
+*.class
