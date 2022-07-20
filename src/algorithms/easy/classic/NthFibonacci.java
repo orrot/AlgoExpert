@@ -1,4 +1,4 @@
-package algorithms.easy;
+package algorithms.easy.classic;
 
 public class NthFibonacci {
 

@@ -1,6 +1,4 @@
-package algorithms.easy;
-
-import java.util.Arrays;
+package algorithms.easy.classic;
 
 public class BinarySearch {
 
@@ -35,7 +33,6 @@ public class BinarySearch {
                 rightIndexArray -= middle;
             } else {
                 leftIndexArray += middle;
-                rightIndexArray = array.length;
             }
             middle = (rightIndexArray - leftIndexArray) / 2;
         }
