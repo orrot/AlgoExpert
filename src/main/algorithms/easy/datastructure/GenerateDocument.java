@@ -1,6 +1,5 @@
-package algorithms.easy.datastructure;
+package main.algorithms.easy.datastructure;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;

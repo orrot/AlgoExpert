@@ -1,4 +1,4 @@
-package algorithms.easy.classic;
+package main.algorithms.easy.classic;
 
 public class BinarySearch {
 

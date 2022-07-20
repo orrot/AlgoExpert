@@ -1,4 +1,4 @@
-package algorithms.medium;
+package main.algorithms.medium;
 
 public class LongestPalindrome {
 
