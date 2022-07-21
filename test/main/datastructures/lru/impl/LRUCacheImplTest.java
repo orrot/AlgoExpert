@@ -6,6 +6,13 @@ import org.junit.Test;
 
 public class LRUCacheImplTest {
 
+    // MOST IMPORTANT TESTS ONLY: Of course a lot of tests are missing and the InternalLinkedList should be tested too
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionWhenCacheIsCreatedWithZeroSize() {
+        LRUCache<String, String> lruCache = new LRUCacheImpl<>(0);
+    }
+
     @Test
     public void shouldReturnValueForOneItemCacheWhenExists() {
 
@@ -74,6 +81,5 @@ public class LRUCacheImplTest {
         Assert.assertEquals("Two", lruCache.getValueInTail());
 
         Assert.assertNull(lruCache.get("1"));
-
     }
 }

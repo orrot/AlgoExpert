@@ -26,6 +26,11 @@ public class LRUCacheImpl<K, V> implements LRUCache<K, V> {
     private final int maximumSize;
 
     public LRUCacheImpl(int maximumSize) {
+
+        if (maximumSize < 1) {
+            throw new IllegalArgumentException("Invalid Cache Size");
+        }
+
         this.maximumSize = maximumSize;
         this.fastReadableMap = new HashMap<>(maximumSize);
         this.mostRecentlyObjects =  new InternalLinkedList<>();
@@ -36,7 +41,7 @@ public class LRUCacheImpl<K, V> implements LRUCache<K, V> {
 
         try {
             lock.readLock().lock();
-            // if the item already exist, just get the item, move in the head of the recently item and remove from the position the item had
+            // if the item already exist, just get the item and move to the head because it's the most recent item
             Node<K, V> newHead = fastReadableMap.get(key);
             if (mostRecentlyObjects.getSize() > 1) {
                 mostRecentlyObjects.moveToHead(newHead);
@@ -54,6 +59,9 @@ public class LRUCacheImpl<K, V> implements LRUCache<K, V> {
     public V put(K key, V value) {
         try {
             lock.writeLock().lock();
+            // If the item is new then it should be the new head and if the size reaches the max, then the tail should be removed.
+            // The tail is the LRU
+            // If the size is 1, we don't need to move anything
             Node<K,V> nodeValue = fastReadableMap.get(key);
             if (nodeValue == null) {
                 Node<K,V> newNode = mostRecentlyObjects.addHead(key, value);
