@@ -5,7 +5,6 @@ import main.datastructures.lru.LRUCache;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 // IMPORTANT: We want ALL THE OPERATIONS AS O(1) !!!
@@ -32,12 +31,12 @@ public class LRUCacheImpl<K, V> implements LRUCache<K, V> {
     // A LinkedList will be used because we need a queue to identify the Least Recently Used then it should be removed in case the size is reached
     // What we need to do is to move the last used (read or written) to the head of the list
     // The item in the tail is the Least Recently Used, so it should be removed
-    // Head == Most Recently, Tail == Least Recently
+    // Head == Most Recently, Tail == Least Recently (and the one that will be removed in case the Cache is full)
     private Node<K, V> head;
     private Node<K, V> tail;
 
     // In case of concurrency, we can control the access for read and write in our Data Structure
-    // TODO
+    // TODO Reentracnt Lock Implementation is missing
     // private ReentrantLock reentrantLock = new ReentrantLock();
 
     // The maximum size of the cache
@@ -55,9 +54,6 @@ public class LRUCacheImpl<K, V> implements LRUCache<K, V> {
     @Override
     public V get(K key) {
 
-        if (head == null) {
-            return null;
-        }
         // if the item already exist, just get the item, move in the head of the recently item and remove from the position the item had
         Node<K, V> newHead = fastReadableMap.get(key);
         if (currentSize > 1) {
@@ -81,13 +77,16 @@ public class LRUCacheImpl<K, V> implements LRUCache<K, V> {
                 head = newNode;
                 tail = newNode;
             } else {
-                Node<K, V> oldHead = head;
-                oldHead.previous = newNode;
+                head.previous = newNode;
+                newNode.next = head;
                 head = newNode;
-                newNode.next = oldHead;
             }
-            if (currentSize >= maximumSize) {
+            if (currentSize > maximumSize) {
+                tail.previous.next = null;
+                tail.next = null;
+                fastReadableMap.remove(tail.key);
                 tail = tail.previous;
+                currentSize--;
             }
             return newNode.value;
         } else if (currentSize > 1) {
@@ -97,18 +96,16 @@ public class LRUCacheImpl<K, V> implements LRUCache<K, V> {
     }
 
     private void moveNodeToTheHead(Node<K, V> newHead) {
-        Node<K, V> oldHead = head;
-        Node<K, V> previousOfNewHead = newHead.previous;
-        Node<K, V> nextOfNewHead = newHead.next;
-
-        head = newHead;
+        newHead.previous.next = newHead.next;
+        if (newHead.next != null) {
+            newHead.next.previous = newHead.previous;
+        } else {
+            tail = newHead.previous;
+        }
+        newHead.next = head;
         newHead.previous = null;
-        newHead.next = oldHead;
-
-        oldHead.previous = newHead;
-
-        previousOfNewHead.next = nextOfNewHead;
-        nextOfNewHead.previous = previousOfNewHead;
+        head.previous = newHead;
+        head = newHead;
     }
 
     @Override
